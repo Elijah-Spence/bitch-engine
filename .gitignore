@@ -70,3 +70,6 @@ Thumbs.db
 # Logs
 *.log
 data/
+data/
+*.egg-info/
+dist/
