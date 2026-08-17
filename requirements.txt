@@ -1,0 +1,11 @@
+# Core requirements (none — stdlib only)
+# Python 3.8+
+
+# Optional: faster execution
+# polyglot
+
+# Optional: code obfuscation
+# polymorphic
+
+# Optional: better translations
+# universal_translator

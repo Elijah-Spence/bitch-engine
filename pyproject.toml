@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bitch-engine"
+version = "3.0.0"
+description = "B.I.T.C.H. v3 — Self-healing, multi-language code execution engine. Never fails."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "VINCULA / GARY", email = "gary@slime.dev"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Compilers",
+]
+
+[project.optional-dependencies]
+polyglot = ["polyglot"]
+polymorphic = ["polymorphic"]
+universal = ["universal_translator"]
+all = ["polyglot", "polymorphic", "universal_translator"]
+
+[project.scripts]
+bitch = "bitch_engine:main"
