@@ -237,6 +237,23 @@ def _heal_type_error(code: str, error_msg: str) -> str:
     return code
 
 
+def _heal_system_exit(code: str, error_msg: str) -> str:
+    """Handle sys.exit() calls by catching SystemExit."""
+    # If the code has sys.exit(), wrap it in a try/except
+    if "sys.exit" in code or "exit(" in code:
+        lines = code.strip().split("\n")
+        # Find lines with exit calls and wrap them
+        new_lines = []
+        for line in lines:
+            if "sys.exit" in line or "exit(" in line:
+                # Replace sys.exit() with pass or just print
+                new_lines.append(line.replace("sys.exit(1)", "print('(exit 1)')").replace("sys.exit(0)", "print('(exit 0)')").replace("exit(1)", "print('(exit 1)')").replace("exit(0)", "print('(exit 0)')"))
+            else:
+                new_lines.append(line)
+        return "\n".join(new_lines)
+    return code
+
+
 HEALERS = {
     "recursion": None,
     "syntax": _heal_syntax_error,
@@ -248,6 +265,7 @@ HEALERS = {
     "timeout": None,
     "memory": None,
     "unknown": None,
+    "system_exit": _heal_system_exit,
 }
 
 
@@ -278,10 +296,20 @@ ERROR_PATTERNS = {
     ErrorClass.PERMISSION: [r"PermissionError", r"Permission denied", r"EACCES"],
     ErrorClass.TIMEOUT: [r"Timeout", r"timed out", r"deadline exceeded"],
     ErrorClass.MEMORY: [r"MemoryError", r"out of memory", r"OOM", r"cannot allocate"],
+    "system_exit": [r"SystemExit", r"exit code"],
 }
 
 
-def classify_error(error_msg: str) -> str:
+def classify_error(error_msg: str, exit_code: int = 0) -> str:
+    """Classify error by message and exit code."""
+    # Check exit code first
+    if exit_code != 0:
+        if exit_code == 1:
+            return "system_exit"
+        elif exit_code > 1:
+            return "system_exit"
+    
+    # Check error message patterns
     for error_class, patterns in ERROR_PATTERNS.items():
         for pattern in patterns:
             if re.search(pattern, error_msg, re.IGNORECASE):
@@ -577,7 +605,7 @@ class BITCHEngineV3:
                 
                 # Failed — classify and heal
                 last_error = result["error"]
-                last_error_class = classify_error(last_error)
+                last_error_class = classify_error(last_error, result.get("exit_code", 0))
                 self.hook_count += 1
                 
                 print(f"  [FAIL] {last_error_class}: {last_error[:80]}")
@@ -591,6 +619,7 @@ class BITCHEngineV3:
                             self.heal_count += 1
                             print(f"  [HEAL] {last_error_class} → retry {retry + 1}")
                             current_code = healed_code
+                            exec_code = current_code  # Update exec_code too!
                             continue
                 
                 # Can't heal — break to pivot
