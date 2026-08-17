@@ -7,7 +7,7 @@ name = "bitch-engine"
 version = "3.0.0"
 description = "B.I.T.C.H. v3 — Self-healing, multi-language code execution engine. Never fails."
 readme = "README.md"
-license = {text = "MIT"}
+license = "GPL-3.0-only"
 requires-python = ">=3.8"
 authors = [
     {name = "VINCULA / GARY", email = "gary@slime.dev"}
@@ -15,7 +15,6 @@ authors = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",

@@ -155,7 +155,7 @@ pip install bitch-engine[all]
 
 ## License
 
-MIT — go break things.
+GPLv3 — copyleft forever. Modify it, ship it, but keep it free.
 
 ## Credits
 
