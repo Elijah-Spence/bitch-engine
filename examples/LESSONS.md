@@ -131,6 +131,26 @@ open("/etc/shadow").read()
 
 ---
 
+## Lesson 8: The Substrate Bug (The One That Almost Killed Us)
+
+**The Bug:** Every interpreted language in `SUBSTRATE_CHAIN` was missing the file path in its `cmd` definition.
+
+```python
+# BROKEN — file never passed to interpreter
+{"name": "python", "ext": ".py", "cmd": ["python3"], "timeout": 10}
+
+# FIXED — file path included
+{"name": "python", "ext": ".py", "cmd": ["python3", "_file.py"], "timeout": 10}
+```
+
+**What happened:** The engine wrote code to a temp file, then ran `python3` (interactive mode) without passing the file. Python exited immediately with code 0. Every test "shipped" with empty output.
+
+**How we found it:** Tests kept returning `success=True, exit_code=0, output=""` for代码 that should have failed. Syntax errors, undefined variables, even segfaults all "shipped."
+
+**The lesson:** Always verify your assumptions. The engine was lying to us because we never actually ran the code.
+
+---
+
 ## The Philosophy
 
 BITCH teaches us three things:
